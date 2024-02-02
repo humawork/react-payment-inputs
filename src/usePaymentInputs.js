@@ -169,6 +169,26 @@ export default function usePaymentCard({
     }),
     [handleFocusCardNumber, handleKeyPressCardNumber, handleChangeCardNumber, handleBlurCardNumber]
   );
+
+  React.useEffect(
+    () => {
+      const timeout = window.setTimeout(() => {
+        if (cardNumberField.current && !cardType) {
+          const formattedCardNumber = cardNumberField.current.value || '';
+          const cardNumber = formattedCardNumber.replace(/\s/g, '');
+          const analyzedCardType = utils.cardTypes.getCardTypeByValue(cardNumber);
+
+          setCardType(analyzedCardType);
+          clearTimeout(timeout);
+        }
+      }, 100);
+
+      return () => {
+        window.clearTimeout(timeout);
+      };
+    },
+    [cardType]
+  );
   /** ====== END: CARD NUMBER STUFF ====== */
 
   /** ====== START: EXPIRY DATE STUFF ====== */
