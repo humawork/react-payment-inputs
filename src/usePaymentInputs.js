@@ -109,8 +109,6 @@ export default function usePaymentCard({
         const cardType = utils.cardTypes.getCardTypeByValue(cardNumber);
         setCardType(cardType);
 
-        setInputTouched('cardNumber', false);
-
         // @ts-ignore
         cardNumberField.current.value = utils.formatter.formatCardNumber(cardNumber);
 
@@ -133,6 +131,7 @@ export default function usePaymentCard({
         if (!cardNumberError && autoFocus) {
           expiryDateField.current && expiryDateField.current.focus();
         }
+        setInputTouched('cardNumber', !cardNumberError);
         setInputError('cardNumber', cardNumberError);
         props.onError && props.onError(cardNumberError);
       };
@@ -214,8 +213,6 @@ export default function usePaymentCard({
   const handleChangeExpiryDate = React.useCallback(
     (props = {}) => {
       return e => {
-        setInputTouched('expiryDate', false);
-
         expiryDateField.current.value = utils.formatter.formatExpiry(e);
 
         props.onInput && props.onInput(e);
@@ -229,6 +226,7 @@ export default function usePaymentCard({
         if (!expiryDateError && autoFocus) {
           cvcField.current && cvcField.current.focus();
         }
+        setInputTouched('expiryDate', !expiryDateError);
         setInputError('expiryDate', expiryDateError);
         props.onError && props.onError(expiryDateError);
       };
@@ -322,8 +320,6 @@ export default function usePaymentCard({
       return e => {
         const cvc = e.target.value;
 
-        setInputTouched('cvc', false);
-
         props.onInput && props.onInput(e);
         props.onChange && props.onChange(e);
         onInput && onInput(e);
@@ -333,6 +329,7 @@ export default function usePaymentCard({
         if (!cvcError && autoFocus) {
           zipField.current && zipField.current.focus();
         }
+        setInputTouched('cvc', !cvcError);
         setInputError('cvc', cvcError);
         props.onError && props.onError(cvcError);
       };
@@ -410,14 +407,13 @@ export default function usePaymentCard({
       return e => {
         const zip = e.target.value;
 
-        setInputTouched('zip', false);
-
         props.onInput && props.onInput(e);
         props.onChange && props.onChange(e);
         onInput && onInput(e);
         onChange && onChange(e);
 
         const zipError = utils.validator.getZIPError(zip, { errorMessages });
+        setInputTouched('zip', !zipError);
         setInputError('zip', zipError);
         props.onError && props.onError(zipError);
       };
